@@ -1,15 +1,17 @@
-#Build a web scraper in here and verify that it works before adding it to main function
+import config as cfg
 
-class Scavenger:
-    pass
+#Build a web scraper in here and verify that it works before adding it to main function
+#In the meantime, use this function to assemble the tickers from config
 
 #Assemble tickers
-a = 0
-while a < len(SECURITY):
-    TICKERS = TICKERS + CHANNEL + '.' + SECURITY[a]
-    if a == len(SECURITY) - 1:
-        a = a + 1
-    else:
-        TICKERS = TICKERS + ','
-        a = a + 1
-#Build a function that scrapes the web that can be imported and called by darwin
+def assemble_tickers(ticker_list):
+    TICKERS = ""
+    a = 0
+    while a < len(ticker_list):
+        TICKERS = TICKERS + cfg.CHANNEL + '.' + ticker_list[a]
+        if a == len(ticker_list) - 1:
+            a = a + 1
+        else:
+            TICKERS = TICKERS + ','
+            a = a + 1
+    return TICKERS
