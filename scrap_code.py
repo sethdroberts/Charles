@@ -1,7 +1,4 @@
-#Requires python3.6 or above
-#Run the following commands to install modules:
-    #pip3 install alpaca_trade_api
-    #pip3 install websocket-client
+#This file holds all the functions used in the other scripts
 
 import alpaca_trade_api as trade_api 
 import time

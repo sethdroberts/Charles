@@ -8,7 +8,7 @@ import time
 import datetime 
 import websocket
 import json
-import darwin_config as cfg
+import config as cfg
 from sendsms import SendSMS as sms
 import logging
 
