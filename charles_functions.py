@@ -27,7 +27,8 @@ def performance():
     api = cfg.api
     account = api.get_account()
     balance_change = round(float(account.equity) - float(account.last_equity),2)
-    percentage_change = round(((float(account.equity) - float(account.last_equity))/float(account.last_equity) * 100),2)
+    percentage_change = round(percent_change(float(account.equity), float(account.last_equity)),2)
+    # percentage_change = round(((float(account.equity) - float(account.last_equity))/float(account.last_equity) * 100),2)
     return "Today's balance change: ${}. Today's percentage change: {}%".format(balance_change, percentage_change)
 
 def liquidate_all():
@@ -78,6 +79,10 @@ def time_till_open():
 #Clears a list or dictionary
 def clear(list):
     list.clear()
+
+def percent_change(start_val, end_val):
+    percent_change = (end_val - start_val)/start_val * 100
+    return percent_change
 
 #Returns the value of a key in a dictionary
 def dict_val(dict, key):
@@ -130,49 +135,122 @@ def build_values_list(list, keys_list):
         x = x + 1
     return list_of_lists
 
+#Creates a dictionary from a list of keys. Adds to a list, all initalized at 0.001 (to avoid dividing by zero)
+def create_dict(key_list):
+    dict = {}
+    x = 0
+    while x < len(key_list):
+        dict.update({key_list[x]: 0.001})
+        x += 1
+    return dict
+
+#Takes an empty list. For each value in second list, creates a dictionary with the keys in the first list.
+#Initializes all to 0 except the first variable, which is initialized to the init variable.
+#Returns the completed list.
+def assemble_dicts(empty_list, key_list, init_list):
+    x = 0
+    while x < len(init_list):
+        new_dict = create_dict(key_list)
+        new_dict.update({key_list[0]: init_list[x]})
+        empty_list.append(new_dict)
+        x += 1
+    return empty_list
+
+initiation = {}
+initiation.update({'initiation': 0})
+
+#Updates a dict with ws data
+def update_perform(data, dict):
+    dict.update({'current_price': data.get('c')})
+    if initiation.get('initiation') == 0:
+        data.update({'open_price': data.get('c')})
+    dict.update({'day_change': percent_change(dict.get('open_price'), data.get('c'))})
+    return dict
+
+#
+def update_top_change(data, dict):
+    pass
+
+#Updates a dictionary with message from websocket
+#Will have to move to websocket
+def update_ws_dict(data, dict_list):
+    data = json.loads(data)
+    data = [0]
+    x = 0
+    while x < len(dict_list):
+        security = cfg.SECURITIES[x]
+        if security == data.get('sym'):
+            pass
 
 
-# stuff = {'item': 3, 'bottle': 'string'}
-# things = {'item': 2, 'bottle': 52.0}
-# others = {'item': 6, 'bottle': 2}
-# fun = {'item': 0, 'bottle': 50}
-# winning = [stuff, things, others, fun]
+# c = 0
+# while c < len(SECURITY):
+#             security = SECURITY[c]
+#             data = json.loads(message)
+#             data = data[0]
+#             if data.get('sym') == security:
+#                 stock_perform = day_perform[c]
+#                 current_price = data.get('c')
+#                 stock_perform.update({'current_price': current_price})
+#                 if initiation.get('initiation') == 0:
+#                     stock_perform.update({'open_price': current_price})
+#                 open_price = stock_perform.get('open_price')
+#                 day_change = (current_price - open_price)/open_price * 100
+#                 stock_perform.update({'day_change': day_change})
 
-# list_of_keys = ['item', 'bottle']
+#                 #Update top_change list
+#                 change_top = top_change[0]
+#                 change_second = top_change[1]
+#                 if security == change_top.get('symbol'):
+#                     change_top.update({'symbol': security, 'change': day_change, 'price': current_price})
+#                 elif security == change_second.get('symbol'):
+#                     if day_change > change_top.get('change'):
+#                         change_second.update(change_top)
+#                         change_top.update({'symbol': security, 'change': day_change, 'price': current_price})
+#                     else:
+#                         change_second.update({'symbol': security, 'change': day_change, 'price': current_price})
+#                 elif day_change > change_top.get('change'):
+#                     change_second.update(change_top)
+#                     change_top.update({'symbol': security, 'change': day_change, 'price': current_price})
+#                 elif day_change > change_second.get('change'):
+#                     change_second.update({'symbol': security, 'change': day_change, 'price': current_price})
+#             c = c + 1
 
-# print(build_values_list(winning, list_of_keys))
 
-# dict = {}
+#   b = 0
+#     while b < len(SECURITY):
+#         #Security list, day_perform, and current_positions are all in the same order
+#         day_perform.append({'symbol': SECURITY[b],'open_price': 0,'current_price': 0, 'day_change': 0})
+#         current_positions.append({'symbol': SECURITY[b], 'start_price': 0, 'profit_price': 0, 'loss_price': 0, 'qty': 0, 'equity': 0, 'status': 0})
+#         b = b + 1
+#     top_change.append({'symbol': SECURITY[0], 'change':0.01, 'price': 0})
+#     top_change.append({'symbol': SECURITY[1], 'change':0.001, 'price': 0})
+#     initiation.update({'initiation': 0, 'iteration': 0})
 
-# stuff = {'stuff': 3}
-# things = {'things': 2}
-# others = {'others': 6}
-# fun = {'item': 0}
+perform_keys = ['symbol','open_price', 'current_price', 'day_change']
+# position_keys = ['symbol', 'start_price', 'profit_price', 'loss_price', 'qty', 'equity']
+# top_keys = ['symbol', 'change', 'price']
+# initiation_keys = ['initiation']
 
-# dict.update(stuff)
-# dict.update(things)
-# dict.update(others)
-# dict.update(fun)
+# current_positions = []
+day_perform = []
+# top_change = []
+# initiation = {}
 
-# # print(dict)
+# initiation.update({initiation_keys[0]: 0})
 
-# # winning = [stuff, things, others, fun]
+# # assemble_dicts(current_positions, perform_keys, cfg.SECURITIES)
+assemble_dicts(day_perform, perform_keys, cfg.SECURITIES)
+# # assemble_dicts(top_change, perform_keys, cfg.SECURITIES[:2])
+# # initiation = create_dict(initiation_keys)
 
-# item = 'item'
-# stuff = 'stuff'
-# things = 'things'
-# others = 'others'
+# # print(current_positions)
+print(day_perform)
+# # print(top_change)
+# # print(initiation)
 
-# big_list = []
-# big_list.append(item)
-# big_list.append(stuff)
-# big_list.append(things)
+# print(initiation)
 
-# # print(big_list)
-# # print(dict)
+new_dict = {'c': 234}
 
-# print(multiple_listdict(dict, big_list))
-
-# # # print(stuff)
-# # # print(things)
-print(performance())
+print(update_perform(new_dict, day_perform[0]))

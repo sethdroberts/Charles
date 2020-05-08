@@ -12,13 +12,20 @@ logger.addHandler(file_handler)
 formatter = logging.Formatter('%(asctime)s:%(name)s:%(message)s')
 file_handler.setFormatter(formatter)
 
-#Dictionary structure
-day_perform = []
+#Initial dictionary structure
 current_positions = []
-initiation = {}
+day_perform = []
 top_change = []
+initiation = {}
+count = 0
 
-#WARNING: Don't change this list without changing order_from_list function. It's default for all order inputs:
+#Dictionary keys
+perform_keys = ['symbol','open_price', 'current_price', 'day_change']
+position_keys = ['symbol', 'start_price', 'profit_price', 'loss_price', 'qty', 'equity']
+top_keys = ['symbol', 'change', 'price']
+initiation_keys = ['initiation']
+
+#WARNING -- Don't change this list without changing order_from_list function. It's default for all order inputs:
 order_keys = ['symbol', 'qty', 'profit_price', 'loss_price']
 
 #Clear all dictionaries
@@ -78,9 +85,21 @@ def on_open(ws):
     ws.send(json.dumps(channel_data))
 
     clear_all()
+    cf.assemble_dicts(current_positions, perform_keys, cfg.SECURITIES)
+    cf.assemble_dicts(day_perform, perform_keys, cfg.SECURITIES)
+    cf.assemble_dicts(top_change, perform_keys, cfg.SECURITIES[:2])
+    initiation.update({initiation_keys[0]: 0})
 
 def on_message(ws, message):
-    logger.info(message)
+    global count
+    if count < len(cfg.SECURITIES + 2):
+        logger.debug(message)
+        count += 1
+    else:
+        logger.debug(message)
+        count += 1
+    
+    
 
 def on_error(ws, error):
     logger.warning(error)

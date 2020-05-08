@@ -9,6 +9,49 @@ Charles is a trading bot. It is named after Charles Darwin, the originator of th
 ##Getting Started##
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
+#Components:
+main.py -- what you run to initiate the Charles algorithm
+charles_algo.py -- the primary algo file. Processes websocket data with imported functions
+charles_functions.py -- 
+scraper.py -- Assembles TICKER list from config file
+sendsms.py -- Imports Twilio API and contains text message functionality
+config.py -- Not uploaded to GitHub as it contains account details. The exact format I use is below.
+
+#Example config.py file:
+    import alpaca_trade_api as trade_api
+    #Add stocks here
+    SECURITIES = ['stock1', 'stock2', 'stock3', 'stock4', 'stock5', 'stock6']
+    CHANNEL = 'A' #T = Trades, Q = Quotes, A = Aggregate (per second), AM = Aggregate (per minute)
+
+    #Profit and loss bracket parameters:
+    TPROFIT = 1.01
+    SLOSS = .998
+
+    #Add your Alpaca account details here:
+    APCA_API_KEY_ID = 'insert-api-key'
+    APCA_API_SECRET_KEY = 'insert-secret-key'
+    APCA_API_BASE_URL = 'https://paper-api.alpaca.markets'
+    ACCOUNT_URL = "{}/v2/acccount".format(APCA_API_BASE_URL)
+
+    #Add Polygon account details here
+    POLYGON_API_KEY = APCA_API_KEY_ID
+    SOCKET = 'wss://alpaca.socket.polygon.io/stocks'
+
+    APCA_API_KEY_ID = APCA_API_KEY_ID
+    APCA_API_SECRET_KEY = APCA_API_SECRET_KEY
+    APCA_API_BASE_URL = APCA_API_BASE_URL
+    ACCOUNT_URL = ACCOUNT_URL
+
+    api = trade_api.REST(APCA_API_KEY_ID,\
+    APCA_API_SECRET_KEY,\
+    APCA_API_BASE_URL)
+
+    #Add Twillio details here:
+    ACCOUNT_SID = 'insert-account-id-here'
+    AUTH_TOKEN = 'insert-auth-token-here'
+    FROM_NUM = 'insert-twilio-number'
+    TO_NUM = 'insert-number-you-are-texting'
+
 #Requirements:
 python >= 3.6 (required for Polygon websocket)
 alpaca_trade_api (connects to Alpaca)
