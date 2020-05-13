@@ -1,6 +1,6 @@
 ##Charles##
 
-Charles is a trading bot. It is named after Charles Darwin, the originator of the theory of evolution, because it is designed to imitate the evolutionary process of "survival of the fittest." The objective of the algorithm is for all stocks in its portfolio to increase by 1%. To accomplish this, it:
+Charles is a trading bot. It is named after Charles Darwin because it is designed to imitate the evolutionary process of "survival of the fittest." The objective of the algorithm is for all stocks in its portfolio to increase by 1%. To accomplish this, it:
     (1) finds a set of stocks that are likely to increase by >1% during the next trading day; 
     (2) if stocks increase from the market open to 1%, it liquidates the position; 
     (3) if a stock decreases below the open price, the position is liquidated and the equity moved to the stock in the portfolio which has increased the most since market open.
@@ -12,7 +12,7 @@ These instructions will get you a copy of the project up and running on your loc
 #Components:
 main.py -- what you run to initiate the Charles algorithm
 charles_algo.py -- the primary algo file. Processes websocket data with imported functions
-charles_functions.py -- 
+charles_functions.py -- contains all the algo functions that can be used elsewhere
 scraper.py -- Assembles TICKER list from config file
 sendsms.py -- Imports Twilio API and contains text message functionality
 config.py -- Not uploaded to GitHub as it contains account details. The exact format I use is below.
